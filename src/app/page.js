@@ -4,6 +4,8 @@ import AddToDo from "./components/AddToDo";
 import { useState } from "react";
 import ToDo from "./components/ToDo";
 import ToDoContainer from "./components/ToDoContainer";
+import CompletedToDo from "./components/CompletedToDo";
+import { v4 } from "uuid";
 
 export default function Home() {
   const [toDo, setToDo] = useState([]);
@@ -17,19 +19,40 @@ export default function Home() {
 
   // set completed to True | task completed
   const completeTask = (id) => {
-    setToDo((prev) =>
-      prev.map((item) =>
+    // Set completed item isCompleted to true
+    setToDo((prev) => {
+      const updatedToDo = prev.map((item) =>
         id === item.id ? { ...item, isCompleted: !item.isCompleted } : item
-      )
-    );
+      );
+
+      // Filter the items that have been completed
+      const items = updatedToDo.filter((item) => item.isCompleted);
+
+      setCompletedToDo((prev) => {
+        // Create a variable that has unique items
+        const completedItems = items.filter(
+          (completedItem) =>
+            // Check if completedItem.id is not the same as our items in our current list
+            !prev.some((item) => item.id === completedItem.id)
+        );
+
+        return [...prev, ...completedItems];
+      });
+      ``;
+
+      return updatedToDo;
+    });
+    deleteTask(id);
   };
+
+  console.log(completedToDo);
 
   // Add newToDo function
   const addToDo = () => {
     setToDo((p) => [
       ...p,
       {
-        id: p.length + 1,
+        id: v4(),
         task: newToDo,
         isCompleted: false,
       },
@@ -72,6 +95,21 @@ export default function Home() {
             </ToDo>
           ))}
         </ToDoContainer>
+        {completedToDo.length > 0 && (
+          <CompletedToDo length={completedToDo.length}>
+            {completedToDo.flat().map((toDo) => (
+              <ToDo
+                key={toDo.id}
+                deleteTask={deleteTask}
+                completeTask={completeTask}
+                id={toDo.id}
+                isCompleted={toDo.isCompleted}
+              >
+                {toDo.task}
+              </ToDo>
+            ))}
+          </CompletedToDo>
+        )}
       </div>
     </div>
   );

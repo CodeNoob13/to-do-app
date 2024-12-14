@@ -7,22 +7,26 @@ const ToDo = ({ children, completeTask, id, isCompleted, deleteTask }) => {
         {children}
       </div>
       <div className="flex gap-2">
-        <Image
-          src="/checkmark.svg"
-          height={30}
-          width={30}
-          alt="checkmark icon"
-          className="cursor-pointer"
-          onClick={() => completeTask(id)}
-        />
-        <Image
-          src="/delete.svg"
-          height={30}
-          width={30}
-          alt="delete icon"
-          className="cursor-pointer"
-          onClick={() => deleteTask(id)}
-        />
+        {!isCompleted && (
+          <Image
+            src="/checkmark.svg"
+            height={30}
+            width={30}
+            alt="checkmark icon"
+            className="cursor-pointer"
+            onClick={() => completeTask(id)}
+          />
+        )}
+        {!isCompleted && (
+          <Image
+            src="/delete.svg"
+            height={30}
+            width={30}
+            alt="delete icon"
+            className="cursor-pointer"
+            onClick={() => deleteTask(id)}
+          />
+        )}
       </div>
     </div>
   );
