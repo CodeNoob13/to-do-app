@@ -29,16 +29,18 @@ export default function Home() {
       const items = updatedToDo.filter((item) => item.isCompleted);
 
       setCompletedToDo((prev) => {
-        // Create a variable that has unique items
+        // Filter our completed items
         const completedItems = items.filter(
           (completedItem) =>
-            // Check if completedItem.id is not the same as our items in our current list
-            !prev.some((item) => item.id === completedItem.id)
+            // Check if the previous array contains an item that has the same id as the item we want to add.
+
+            // If it does contain the same id, we will not add this "!prev" will exclude the item.
+            !prev.some((item) => completedItem.id === item.id)
         );
 
+        // Return old array items with new completed task
         return [...prev, ...completedItems];
       });
-      ``;
 
       return updatedToDo;
     });
