@@ -1,7 +1,7 @@
 "use client";
 
 import AddToDo from "./components/AddToDo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToDo from "./components/ToDo";
 import ToDoContainer from "./components/ToDoContainer";
 import CompletedToDo from "./components/CompletedToDo";
@@ -12,9 +12,30 @@ export default function Home() {
   const [newToDo, setNewToDo] = useState("");
   const [completedToDo, setCompletedToDo] = useState([]);
 
+  useEffect(() => {
+    const getFromLocalStorage = () => {
+      const toDoList = localStorage.getItem("todo");
+      const completedList = localStorage.getItem("completed");
+
+      if (toDoList) {
+        setToDo(JSON.parse(toDoList));
+      }
+
+      if (completedList) {
+        setCompletedToDo(JSON.parse(completedList));
+      }
+    };
+
+    getFromLocalStorage();
+  }, []);
+
   // Delete task | if id !== item.id leave in list
   const deleteTask = (id) => {
-    setToDo((prev) => prev.filter((item) => item.id !== id));
+    setToDo((prev) => {
+      const newTaks = prev.filter((item) => item.id !== id);
+      localStorage.setItem("todo", JSON.stringify(newTaks));
+      return newTaks;
+    });
   };
 
   // set completed to True | task completed
@@ -39,26 +60,30 @@ export default function Home() {
         );
 
         // Return old array items with new completed task
-        return [...prev, ...completedItems];
-      });
+        const completedArr = [...prev, ...completedItems];
 
+        localStorage.setItem("completed", JSON.stringify(completedArr));
+        return completedArr;
+      });
       return updatedToDo;
     });
     deleteTask(id);
   };
 
-  console.log(completedToDo);
-
   // Add newToDo function
   const addToDo = () => {
-    setToDo((p) => [
-      ...p,
-      {
-        id: v4(),
-        task: newToDo,
-        isCompleted: false,
-      },
-    ]);
+    setToDo((p) => {
+      const newToDoList = [
+        ...p,
+        {
+          id: v4(),
+          task: newToDo,
+          isCompleted: false,
+        },
+      ];
+      localStorage.setItem("todo", JSON.stringify(newToDoList));
+      return newToDoList;
+    });
   };
 
   // Add toDo to onClick
@@ -68,6 +93,7 @@ export default function Home() {
     if (newToDo) {
       addToDo();
     }
+
     setNewToDo("");
   };
 
@@ -77,25 +103,28 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <div className="bg-[#1D1825] h-[758px] w-[583px] rounded-[20px] px-16 py-12  overflow-y-auto">
+    <div className="flex items-center justify-center min-h-screen px-4 py-4">
+      <div className="bg-[#1D1825] h-[758px] w-full sm:w-[583px] rounded-[20px] px-6 py-12 sm:px-16 sm:py-12  overflow-y-auto ">
         <AddToDo
           submitToDo={submitToDo}
           handleChange={handleChange}
           newToDo={newToDo}
         />
         <ToDoContainer length={toDo.length}>
-          {toDo.map((toDo) => (
-            <ToDo
-              key={toDo.id}
-              deleteTask={deleteTask}
-              completeTask={completeTask}
-              id={toDo.id}
-              isCompleted={toDo.isCompleted}
-            >
-              {toDo.task}
-            </ToDo>
-          ))}
+          {toDo.map(
+            (toDo) =>
+              (
+                <ToDo
+                  key={toDo.id}
+                  deleteTask={deleteTask}
+                  completeTask={completeTask}
+                  id={toDo.id}
+                  isCompleted={toDo.isCompleted}
+                >
+                  {toDo.task}
+                </ToDo>
+              )``
+          )}
         </ToDoContainer>
         {completedToDo.length > 0 && (
           <CompletedToDo length={completedToDo.length}>
