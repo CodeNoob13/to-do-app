@@ -111,20 +111,17 @@ export default function Home() {
           newToDo={newToDo}
         />
         <ToDoContainer length={toDo.length}>
-          {toDo.map(
-            (toDo) =>
-              (
-                <ToDo
-                  key={toDo.id}
-                  deleteTask={deleteTask}
-                  completeTask={completeTask}
-                  id={toDo.id}
-                  isCompleted={toDo.isCompleted}
-                >
-                  {toDo.task}
-                </ToDo>
-              )``
-          )}
+          {toDo.map((toDo) => (
+            <ToDo
+              key={toDo.id}
+              deleteTask={deleteTask}
+              completeTask={completeTask}
+              id={toDo.id}
+              isCompleted={toDo.isCompleted}
+            >
+              {toDo.task}
+            </ToDo>
+          ))}
         </ToDoContainer>
         {completedToDo.length > 0 && (
           <CompletedToDo length={completedToDo.length}>
