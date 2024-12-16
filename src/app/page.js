@@ -102,6 +102,12 @@ export default function Home() {
     setNewToDo(e.target.value);
   };
 
+  // Reset` our completed task list
+  const resetCompleted = () => {
+    setCompletedToDo([]);
+    localStorage.setItem("completed", []);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-4">
       <div className="bg-[#1D1825] h-[758px] w-full sm:w-[583px] rounded-[20px] px-6 py-12 sm:px-16 sm:py-12  overflow-y-auto ">
@@ -124,8 +130,8 @@ export default function Home() {
           ))}
         </ToDoContainer>
         {completedToDo.length > 0 && (
-          <CompletedToDo length={completedToDo.length}>
-            {completedToDo.flat().map((toDo) => (
+          <CompletedToDo length={completedToDo.length} reset={resetCompleted}>
+            {completedToDo.map((toDo) => (
               <ToDo
                 key={toDo.id}
                 deleteTask={deleteTask}
